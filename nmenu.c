@@ -158,10 +158,12 @@ static int handler(const char* section, const char* name, const char* value)
 			} else
 			if (MATCH_NAME("text")) {
 				entry->enabled = true;
-				strcpy(entry->text, value);
+				strncpy(entry->text, value, MAX_MENU_TEXT - 1);
+				entry->text[MAX_MENU_TEXT - 1] = '\0';
 			} else
 			if (MATCH_NAME("exec")) {
-				strncpy(entry->exec, dos2_strupr(value), MAX_FILE_PATH-1);
+				strncpy(entry->exec, dos2_strupr(value), MAX_FILE_PATH - 1);
+				entry->exec[MAX_FILE_PATH - 1] = '\0';
 			} else
 			if (MATCH_NAME("next")) {
 				index++;
