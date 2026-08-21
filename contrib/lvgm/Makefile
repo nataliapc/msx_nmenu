@@ -1,6 +1,6 @@
 .PHONY: all clean lvgm clean
 
-SDCC_VER := 4.2.0
+SDCC_VER := 4.5.0
 DOCKER_IMG = nataliapc/sdcc:$(SDCC_VER)
 DOCKER_RUN = docker run -i --rm -u $(shell id -u):$(shell id -g) -v .:/src -w /src $(DOCKER_IMG)
 

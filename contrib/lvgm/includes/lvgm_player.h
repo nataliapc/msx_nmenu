@@ -211,37 +211,37 @@ inline void LVGM_SetFrequency50Hz() { g_LVGM_State |= LVGM_STATE_50HZ; }
 //
 // Return:
 //   FALSE if frequency is not 50 Hz.
-inline bool LVGM_IsFrequency50Hz() { return g_LVGM_State & LVGM_STATE_50HZ; }
+inline bool LVGM_IsFrequency50Hz(void) { return g_LVGM_State & LVGM_STATE_50HZ; }
 
 // Function: LVGM_SetFrequency60Hz
 // Change frequency to 60 Hz.
-inline void LVGM_SetFrequency60Hz() { g_LVGM_State &= ~LVGM_STATE_50HZ; }
+inline void LVGM_SetFrequency60Hz(void) { g_LVGM_State &= ~LVGM_STATE_50HZ; }
 
 // Function: LVGM_SetFrequency60Hz
 // Check if frequency is 60 Hz.
 //
 // Return:
 //   TRUE if frequency is 60 Hz.
-inline bool LVGM_IsFrequency60Hz() { return (g_LVGM_State & LVGM_STATE_50HZ) == 0; }
+inline bool LVGM_IsFrequency60Hz(void) { return (g_LVGM_State & LVGM_STATE_50HZ) == 0; }
 
 // Function: LVGM_IsPlaying
 // Check if music playing
 //
 // Return:
 //   FALSE if music is not playing
-inline bool LVGM_IsPlaying() { return g_LVGM_State & LVGM_STATE_PLAY; }
+inline bool LVGM_IsPlaying(void) { return g_LVGM_State & LVGM_STATE_PLAY; }
 
 // Function: LVGM_Resume
 // Resume music playback
-inline void LVGM_Resume() { g_LVGM_State |= LVGM_STATE_PLAY; }
+inline void LVGM_Resume(void) { g_LVGM_State |= LVGM_STATE_PLAY; }
 
 // Function: LVGM_Pause
 // Pause music playback
-void LVGM_Pause();
+void LVGM_Pause(void);
 
 // Function: LVGM_Decode
 // Decode a frame of music
-void LVGM_Decode();
+void LVGM_Decode(void);
 
 // Function: LVGM_SetPointer
 // Jump to a specific position in the music data
@@ -255,42 +255,42 @@ inline void LVGM_SetPointer(const u8* ptr) { g_LVGM_Pointer = ptr; }
 //
 // Return:
 //   Device list (see <LVGM_CHIP>)
-inline u8 LVGM_GetDevices() { return g_LVGM_Devices; }
+inline u8 LVGM_GetDevices(void) { return g_LVGM_Devices; }
 
 // Function: LVGM_IncludePSG
 // Is music including PSG data
 //
 // Return:
 //   TRUE is current music include PSG data
-inline bool LVGM_IncludePSG() { return g_LVGM_Devices & LVGM_CHIP_PSG; }
+inline bool LVGM_IncludePSG(void) { return g_LVGM_Devices & LVGM_CHIP_PSG; }
 
 // Function: LVGM_IncludeOPLL
 // Is music including OPLL/MSX-Music data
 //
 // Return:
 //   TRUE is current music include OPLL data
-inline bool LVGM_IncludeOPLL() { return g_LVGM_Devices & LVGM_CHIP_MSXMUSIC; }
+inline bool LVGM_IncludeOPLL(void) { return g_LVGM_Devices & LVGM_CHIP_MSXMUSIC; }
 
 // Function: LVGM_IncludeOPL
 // Is music including OPL/MSX-Audio data
 //
 // Return:
 //   TRUE is current music include OPL data
-inline bool LVGM_IncludeOPL() { return g_LVGM_Devices & LVGM_CHIP_MSXAUDIO; }
+inline bool LVGM_IncludeOPL(void) { return g_LVGM_Devices & LVGM_CHIP_MSXAUDIO; }
 
 // Function: LVGM_IncludeSCC
 // Is music including SCC data
 //
 // Return:
 //   TRUE is current music include SCC data
-inline bool LVGM_IncludeSCC() { return g_LVGM_Devices & LVGM_CHIP_SCC; }
+inline bool LVGM_IncludeSCC(void) { return g_LVGM_Devices & LVGM_CHIP_SCC; }
 
 // Function: LVGM_GetDefaultPSGValue
 // Get default PSG value used to optimized more commun data
 //
 // Return:
 //   Default value for PSG data
-inline u8 LVGM_GetDefaultPSGValue() { return g_LVGM_PSG_Default; }
+inline u8 LVGM_GetDefaultPSGValue(void) { return g_LVGM_PSG_Default; }
 
 
 #if (LVGM_USE_NOTIFY)

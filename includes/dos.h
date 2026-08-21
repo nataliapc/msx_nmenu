@@ -110,6 +110,9 @@ typedef uint8_t  FILEH;
 #define IOCTL   0x4B		// I/O control for devices		         NEW
 
 #define DELETE  0x4D		// Delete file or subdirectory	         NEW
+#define RENAME  0x4E		// Rename file or subdirectory	         NEW
+#define MOVE    0x4F		// Move file or subdirectory		         NEW
+#define ATTR    0x50		// Get/set file attributes		         NEW
 
 #define GETCD   0x59		// Get current directory		         NEW
 #define CHDIR   0x5A		// Change current directory		         NEW
@@ -506,7 +509,7 @@ RETB  dosVersion(void) __sdcccall(1);
 void  exit(void);
 RETB  getCurrentDrive(void) __sdcccall(1);
 char* getProgramPath(char *path);
-RETW  availableDrives() __sdcccall(0);
+RETW  availableDrives(void) __sdcccall(0);
 void  getSystemDate(SYSTEMDATE_t *date) __sdcccall(1);
 void  getSystemTime(SYSTEMTIME_t *time) __sdcccall(1);
 
@@ -516,7 +519,7 @@ bool  fclose(void) __sdcccall(1);
 bool  remove(char *filename) __sdcccall(1);
 RETW  fread(char* buf, uint16_t size) __sdcccall(1);
 RETW  fwrite(char* buf, uint16_t size) __sdcccall(1);
-bool  fflush();
+bool  fflush(void);
 RETW  fputs(char* str);
 char* fgets(char* buf, uint16_t size);
 RETDW fseek(uint32_t offset, uint8_t origin);
@@ -546,8 +549,8 @@ FILEH dos2_fcreate(char *filename, char mode, char attributes) __sdcccall(0);
 FILEH dos2_fflush(FILEH fh) __sdcccall(1);
 ERRB  dos2_fclose(FILEH fh) __naked __sdcccall(1);
 ERRB  dos2_remove(char *filename) __sdcccall(1);
-//ERRB  dos2_rename(char *oldname, char *newname) __sdcccall(1);
-//ERRB  dos2_move(char *filename, char *newpath) __sdcccall(1);
+ERRB  dos2_rename(char *oldname, char *newname) __sdcccall(1);
+ERRB  dos2_move(char *filename, char *newpath) __sdcccall(1);
 RETW  dos2_fread(char* buf, uint16_t size, FILEH fh) __sdcccall(0);
 RETW  dos2_fwrite(char* buf, uint16_t size, FILEH fh) __sdcccall(0);
 RETW  dos2_fputs(char* str, FILEH fh);
@@ -558,8 +561,8 @@ RETDW dos2_ftell(FILEH fh);
 ERRB dos2_findfirst(const char *pathname, FFBLK *ffblk, uint8_t attrib) __sdcccall(0);
 ERRB dos2_findnext(FFBLK *ffblk ) __sdcccall(1);
 
-//RETB  dos2_setAttrib(char *filename, uint8_t attrib) __sdcccall(1);
-//RETB  dos2_getAttrib(char *filename) __sdcccall(1);
+RETW  dos2_setAttrib(char *filename, uint8_t attrib) __sdcccall(1);
+RETW  dos2_getAttrib(char *filename) __sdcccall(1);
 void dos2_setAbortRoutine(void *routine) __sdcccall(1);
 RETW dos2_getScreenSize(void) __sdcccall(1);
 ERRB dos2_getEnv(char* name, char* buffer, uint8_t buffer_size) __sdcccall(0);
@@ -573,8 +576,8 @@ ERRB nxtr_getDriveLetterInfo(char drive, DRIVE_info *info) __sdcccall(1);
 ERRB nxtr_getClusterInfoFAT(char drive, uint16_t clusterNumber, CLUSTER_info *info) __sdcccall(0);
 ERRB nxtr_readAbsoluteSectorDrv(uint8_t drive, uint32_t startsec, uint8_t nsec);
 ERRB nxtr_writeAbsoluteSectorDrv(uint8_t drive, uint32_t startsec, uint8_t nsec);
-ERRB nxtr_set_drive_lock(uint8_t drive, uint8_t value);
-ERRB nxtr_get_drive_lock(uint8_t drive);
+ERRB nxtr_setDriveLock(uint8_t drive, uint8_t value);
+ERRB nxtr_getDriveLock(uint8_t drive);
 
 // Memory mapper (MSX-DOS 2.x)
 RETB mapperInit(void);

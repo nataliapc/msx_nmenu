@@ -52,7 +52,7 @@ LVGM_NotifyCB             g_LVGM_Callback = LVGM_Defaultcallback;
 #if (LVGM_USE_PSG)
 //-----------------------------------------------------------------------------
 //
-void LVGM_DecodePSG()
+void LVGM_DecodePSG(void)
 {
 	u8 op = *g_LVGM_Pointer & 0xF0;
 	switch(op)

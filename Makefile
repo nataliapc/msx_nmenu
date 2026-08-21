@@ -1,6 +1,6 @@
-.PHONY: clean test release contrib resview imxview dsk rom
+.PHONY: clean cleancontrol cleanlibs cleanobj cleanprogram test release contrib resview imxview dsk rom
 
-SDCC_VER := 4.2.0
+SDCC_VER := 4.5.0
 DOCKER_IMG = nataliapc/sdcc:$(SDCC_VER)
 DOCKER_RUN = docker run -i --rm -u $(shell id -u):$(shell id -g) -v .:/src -w /src $(DOCKER_IMG)
 
@@ -34,7 +34,7 @@ LIB_GUARD=@mkdir -p $(LIBDIR)
 AS = $(DOCKER_RUN) sdasz80
 AR = $(DOCKER_RUN) sdar
 CC = $(DOCKER_RUN) sdcc
-HEX2BIN = hex2bin
+HEX2BIN = $(DOCKER_RUN) hex2bin
 MAKE = make -s --no-print-directory
 JAVA = java
 DSKTOOL = $(BINDIR)/dsktool
@@ -123,7 +123,7 @@ $(OBJDIR)/$(PROGRAM).com: $(REL_LIBS) $(wildcard $(INCDIR)/*.h)
 	@echo "$(COL_YELLOW)######## Compiling $@$(COL_RESET)"
 	@$(DIR_GUARD)
 	@$(CC) $(CCFLAGS) $(FULLOPT) -I$(INCDIR) -I$(INCLVGMDIR) -L$(LIBDIR) $(REL_LIBS) -o $(subst .com,.ihx,$@) ;
-	@$(HEX2BIN) -e com $(subst .com,.ihx,$@)
+	@$(HEX2BIN) -e com $(subst .com,.ihx,$@) ;
 
 
 release: $(OBJDIR)/$(PROGRAM).com

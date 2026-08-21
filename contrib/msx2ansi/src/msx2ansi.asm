@@ -1352,7 +1352,7 @@ EXTROM	.equ	#0x015F
 EXPTBL	.equ	#0xFCC1
 H_NMI	.equ	#0xFDD6
 ;
-CALSUB:  
+CALSUB::  
 	EXX
 	EX     AF,AF'       		; store all registers
 	LD     HL,#EXTROM

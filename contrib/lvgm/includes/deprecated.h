@@ -10,8 +10,8 @@
 #pragma once
 
 // Core
-#define TRUE						true
-#define FALSE						false
+#define TRUE						1
+#define FALSE						0
 #ifndef NULL
 #define NULL						null
 #endif
