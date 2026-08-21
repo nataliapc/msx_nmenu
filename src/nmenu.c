@@ -158,10 +158,12 @@ static int handler(const char* section, const char* name, const char* value)
 			} else
 			if (MATCH_NAME("text")) {
 				entry->enabled = true;
-				strcpy(entry->text, value);
+				strncpy(entry->text, value, MAX_MENU_TEXT - 1);
+				entry->text[MAX_MENU_TEXT - 1] = '\0';
 			} else
 			if (MATCH_NAME("exec")) {
-				strncpy(entry->exec, dos2_strupr(value), MAX_FILE_PATH-1);
+				strncpy(entry->exec, dos2_strupr(value), MAX_FILE_PATH - 1);
+				entry->exec[MAX_FILE_PATH - 1] = '\0';
 			} else
 			if (MATCH_NAME("next")) {
 				index++;
@@ -194,12 +196,21 @@ void menu_show()
 {
 	void *palette = NULL;
 
+	// Ensure VDP is ready before operations
+	waitVDPready();
+	ASM_EI; ASM_HALT;
+	
 	copyToPage1();
 	waitVDPready();
 	ASM_EI; ASM_HALT;
+	
 	setVPage(1);
+	waitVDPready();
+	ASM_EI; ASM_HALT;
+	
 	clearSC7();
 	waitVDPready();
+	ASM_EI; ASM_HALT;
 
 	// Set backgrounds
 	csprintf(buff, initScreen, menu->bgColor);
@@ -207,6 +218,8 @@ void menu_show()
 	if (menu->bgFileSC7[0] && dos2_fileexists(menu->bgFileSC7)) {
 		// Load background SC7 file
 		palette = bloads(menu->bgFileSC7);
+		waitVDPready();
+		ASM_EI; ASM_HALT;
 	}
 	if (menu->bgFileANSI[0] && dos2_fileexists(menu->bgFileANSI)) {
 		// Load background ANSI file
@@ -249,9 +262,15 @@ if (LVGM_IncludeSCC()) AnsiPrint(ANSI_CURSORPOS(0,25)ANSI_COLOR(1;37;40)" LVGM_I
 
 	waitVDPready();
 	ASM_EI; ASM_HALT;
+	
 	setVPage(0);
+	waitVDPready();
+	ASM_EI; ASM_HALT;
+	
 	if (palette) {
 		setPalette(palette);
+		waitVDPready();
+		ASM_EI; ASM_HALT;
 	}
 }
 
@@ -311,13 +330,31 @@ void launch_exec(MENU_ENTRY_t *entry)
 				lastSel = 0xff;
 			}
 		} else {
-			// Restore screen
+			// Restore screen properly before executing
 			AnsiPrint(ANSI_CURSORON);
 			AnsiEndBuffer();
 			AnsiFinish();
+			
+			// Wait for VDP to complete all operations
+			ASM_EI; ASM_HALT;
 			waitVDPready();
+			ASM_EI; ASM_HALT;
+			
+			// Disable screen before major changes
+			__asm
+				ld   ix, #DISSCR
+				BIOSCALL
+			__endasm;
+			
 			restoreScreen();
 			resetPalette();
+			
+			// Enable screen again
+			__asm
+				ld   ix, #ENASCR
+				BIOSCALL
+			__endasm;
+			
 			// Execute command
 			execv(entry->exec);
 		}
@@ -417,19 +454,30 @@ void restoreScreen()
 		BIOSCALL
 	__endasm;
 
+	// Add small delay for VDP stability
+	ASM_EI; ASM_HALT;
+	
 	varLINL40 = originalLINL40;
 	varFORCLR = originalFORCLR;
 	varBAKCLR = originalBAKCLR;
 	varBDRCLR = originalBDRCLR;
 
-	if (kanjiMode) {
+	if (kanjiMode && kanjiMode != MODE_ANK) {
 		// Restore kanji mode if needed
-		setKanjiMode(kanjiMode);
+		// First ensure we're in ANK mode before switching
+		if (detectKanjiDriver()) {
+			setKanjiMode(MODE_ANK);
+			ASM_EI; ASM_HALT;
+			setKanjiMode(kanjiMode);
+		}
 	} else {
 		// Restore original screen mode
 		restoreOriginalScreenMode();
 	}
 
+	// Add delay before enabling screen
+	ASM_EI; ASM_HALT;
+	
 	__asm
 		ld   ix, #ENASCR
 		BIOSCALL
